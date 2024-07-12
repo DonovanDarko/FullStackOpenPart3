@@ -5,14 +5,6 @@ app.use(express.static('dist'))
 
 const Person = require('./models/person')
 
-const requestLogger = (request, response, next) => {
-  console.log('Method:', request.method)
-  console.log('Path:  ', request.path)
-  console.log('Body:  ', request.body)
-  console.log('---')
-  next()
-}
-
 const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
@@ -24,7 +16,6 @@ const errorHandler = (error, request, response, next) => {
 const morgan = require('morgan')
 const cors = require('cors')
 app.use(cors())
-app.use(requestLogger)
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
@@ -107,7 +98,22 @@ app.post('/api/persons', (request, response) => {
 
     persons = persons.concat(person)
     response.json(person)
+
+    result => {
+      console.log(`added ${result.name} number ${result.number} to phonebook`)
+      response.json(result)
     */
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+  Person.findByIdAndUpdate(request.params.id, {
+    number: request.body.number
+  })
+  .then(result => {
+    console.log(`updated ${result.name} with new number ${request.body.number}`)
+    response.json(result)
+  })
+  .catch(error => next(error))
 })
 
 
