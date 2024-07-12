@@ -13,3 +13,6 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:3001/api/persons/malformedid
+
+###
+GET http://localhost:3001/api/info/
