@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import personService from './services/person'
-import { AddPersonForm, Filter, Person } from './components/PersonComponents'
+import { AddPersonForm, Filter, PersonList } from './components/PersonComponents'
 import Notification from './components/Notification'
 
 const App = () => {
@@ -34,9 +34,10 @@ const App = () => {
         personService
         .update(existingPerson.id, personObject)
         .then(returnedPerson => {
-          setPersons(persons.filter(person => person.id !== existingPerson.id).concat(returnedPerson))
+          let personList = persons.filter(person => person.id !== existingPerson.id).concat(returnedPerson)
+          setPersons(personList)
           setFilter('')
-          setPersonsToShow(persons.filter(person => person.id !== existingPerson.id).concat(returnedPerson))
+          setPersonsToShow(personList.filter(p => true))
           setNewName('')
           setNewNumber('')
           setNotification(
@@ -119,9 +120,7 @@ const App = () => {
       <AddPersonForm addPerson={addPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
       <h2>Numbers</h2>
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
-      <ul>
-        {personsToShow.map(person => <Person key={person.name} person={person} deletePerson={() => deletePersonRecord(person.id)} /> )}
-      </ul>
+      <PersonList persons={personsToShow} deletePerson={deletePersonRecord} />
     </div>
   )
 }
