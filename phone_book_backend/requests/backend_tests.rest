@@ -10,3 +10,6 @@ Content-Type: application/json
     "name": "Andrea Talberson",
     "number": "827-29038-20938"
 }
+
+###
+DELETE http://localhost:3001/api/persons/malformedid
