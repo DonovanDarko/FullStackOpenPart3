@@ -1,9 +1,9 @@
 const express = require('express')
 const app = express()
-app.use(express.json())
-app.use(express.static('dist'))
 
 const Person = require('./models/person')
+
+app.use(express.static('dist'))
 
 const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
@@ -13,9 +13,12 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
-const morgan = require('morgan')
 const cors = require('cors')
 app.use(cors())
+app.use(express.json())
+
+const morgan = require('morgan')
+
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
@@ -113,7 +116,7 @@ app.put('/api/persons/:id', (request, response, next) => {
     number: request.body.number
   })
   .then(result => {
-    console.log(`updated ${result.name} with new number ${request.body.number}`)
+    console.log(`updated ${result.name} with new number ${result.number}`)
     response.json(result)
   })
   .catch(error => next(error))
