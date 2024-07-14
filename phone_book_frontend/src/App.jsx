@@ -30,14 +30,14 @@ const App = () => {
     let existingPerson = persons.find((person) => person.name === personObject.name)
 
     if (existingPerson) {
-      if (confirm(`\'${newName}\' is already added to phonebook. Replace the old number with a new one?`)) {
+      if (confirm(`${newName} is already added to phonebook. Replace the old number with a new one?`)) {
         personService
         .update(existingPerson.id, personObject, { runValidators: true })
         .then(returnedPerson => {
           let personList = persons.filter(person => person.id !== existingPerson.id).concat(returnedPerson)
           setPersons(personList)
           setFilter('')
-          setPersonsToShow(personList.filter(p => true))
+          setPersonsToShow(personList)
           setNewName('')
           setNewNumber('')
           setNotification(
@@ -106,6 +106,7 @@ const App = () => {
         setPersonsToShow(
           remainingPersons.filter((person) => person.name.toLowerCase().includes(filter.toLowerCase()))
         )
+        console.log(removedPerson.name, " was removed")
       })
     }
   }

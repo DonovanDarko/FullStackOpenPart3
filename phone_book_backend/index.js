@@ -8,10 +8,10 @@ app.use(express.static('dist'))
 const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  }
   if (error.name === 'ValidationError') {
     return response.status(400).send({ error: error.message })
-  } 
+  }
   next(error)
 }
 
@@ -51,13 +51,13 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/api/info', (request, response) => {
-    current_time = new Date()
+    let current_time = new Date()
     Person.find({}).then(persons => {
       response.send(`<div>Phonebook has info for ${persons.length} people </div> <br /> <div>${current_time}</div>`)
     })
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
     const id = request.params.id
     Person.findById(id)
     .then(person => {

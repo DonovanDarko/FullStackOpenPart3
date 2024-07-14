@@ -5,7 +5,7 @@ if (process.argv.length<3) {
   process.exit(1)
 }
 
-const password = encodeURIComponent(process.argv[2]);
+const password = encodeURIComponent(process.argv[2])
 const name = process.argv[3]
 const number = process.argv[4]
 
@@ -29,10 +29,10 @@ if (name && number) {
     number: number,
   })
 
-person.save().then(result => {
-    console.log(`added ${name} number ${number} to phonebook`)
-    mongoose.connection.close()
-  })
+  person.save().then(result => {
+      console.log(`added ${name} number ${number} to phonebook`)
+      mongoose.connection.close()
+    })
 } else if (name || number) {
   console.log('missing name or number')
 } else {
