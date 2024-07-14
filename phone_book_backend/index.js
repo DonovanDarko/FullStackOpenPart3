@@ -114,6 +114,8 @@ app.post('/api/persons', (request, response) => {
 app.put('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndUpdate(request.params.id, {
     number: request.body.number
+  }, {
+    new: true 
   })
   .then(result => {
     console.log(`updated ${result.name} with new number ${result.number}`)
