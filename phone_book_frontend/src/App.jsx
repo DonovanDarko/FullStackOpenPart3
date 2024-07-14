@@ -32,7 +32,7 @@ const App = () => {
     if (existingPerson) {
       if (confirm(`\'${newName}\' is already added to phonebook. Replace the old number with a new one?`)) {
         personService
-        .update(existingPerson.id, personObject)
+        .update(existingPerson.id, personObject, { runValidators: true })
         .then(returnedPerson => {
           let personList = persons.filter(person => person.id !== existingPerson.id).concat(returnedPerson)
           setPersons(personList)
@@ -51,9 +51,10 @@ const App = () => {
           }, 5000)
         })
         .catch(error => {
+          console.log(error)
           setNotification(
             {
-              'message': `This person was already deleted`,
+              'message': error.response.data.error,
               'error': true
             }
           )
@@ -75,6 +76,17 @@ const App = () => {
           {
             'message': `Added '${personObject.name}'`,
             'error': false
+          }
+        )
+        setTimeout(() => {
+          setNotification({'message': null, 'error': false})
+        }, 5000)
+      })
+      .catch(error => {
+        setNotification(
+          {
+            'message': error.response.data.error,
+            'error': true
           }
         )
         setTimeout(() => {

@@ -9,7 +9,9 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } 
-
+  if (error.name === 'ValidationError') {
+    return response.status(400).send({ error: error.message })
+  } 
   next(error)
 }
 
@@ -68,7 +70,7 @@ app.get('/api/persons/:id', (request, response) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
 
     const person = new Person({
@@ -80,42 +82,14 @@ app.post('/api/persons', (request, response) => {
       console.log(`added ${result.name} number ${result.number} to phonebook`)
       response.json(result)
     })
-  
-/*
-    if (body.name === "" || body.number === "" ) {
-        response.status(400).json({
-            error: 'name or number is not provided'
-        })
-    }
-
-    let existingPerson = persons.find((person) => person.name === body.name)
-
-    if(existingPerson) {
-        response.status(400).json({
-            error: 'name must be unique'
-        })
-    }
-
-    const person = {
-        name: body.name,
-        number: body.number,
-        id: generateId(),
-    }
-
-    persons = persons.concat(person)
-    response.json(person)
-
-    result => {
-      console.log(`added ${result.name} number ${result.number} to phonebook`)
-      response.json(result)
-    */
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndUpdate(request.params.id, {
     number: request.body.number
   }, {
-    new: true 
+    new: true, runValidators: true, context: 'query'
   })
   .then(result => {
     console.log(`updated ${result.name} with new number ${result.number}`)
